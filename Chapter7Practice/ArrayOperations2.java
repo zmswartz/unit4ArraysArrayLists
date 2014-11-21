@@ -109,9 +109,36 @@ public class ArrayOperations2
         values = temp;
     }
     
-    public void moveToFront()
+    public void evensMoveToFront()
     {
+        int[] evens = new int[values.length];
+        int[] odds = new int[values.length];
+        int countE = 0;
+        int countO = 0;
+        for (int i : values)
+        {
+            if(i % 2 == 0)
+            {
+                evens[countE] = i;
+                countE += 1;
+            }
+            else
+            {
+                odds[countO] = i;
+                countO += 1;
+            }
+        }
         
+        int[] newArray = new int[values.length];
+        for (int i = 0; i < countE; i++)
+        {
+            newArray[i] = evens[i];
+        }
+        for (int i = countE; i < countE + countO; i++)
+        {
+            newArray[i] = odds[i-countE];
+        }
+        values = newArray;
     }
     
     public int secondLargest()
@@ -120,8 +147,68 @@ public class ArrayOperations2
         int second = Math.min(values[0], values[1]);
         for (int i = 2; i < values.length; i++)
         {
-            
+            if (values[i] > max)
+            {
+                second = max;
+                max = values[i];
+            }
+            else if (values[i] > second)
+            {
+                second = values[i];
+            }
         }
-        return 7;
+        return second;
+    }
+    
+    public boolean isInceasingOrder()
+    {
+        int last = values[0];
+        
+        for (int i = 1; i < values.length; i++)
+        {
+            if( values[i] > last)
+            {
+                last = values[i];
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public boolean isAdjacentDuplicates()
+    {
+        
+        for (int i = 0; i < values.length-1; i++)
+        {
+            int right = values[i+1];
+            if (right == values[i])
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean isDuplicates()
+    {
+        for (int i: values)
+        {
+            int count = 0;
+            for (int j : values)
+            {
+                if (i == j)
+                {
+                    count += 1;
+                }
+            }
+            if (count != 1)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
