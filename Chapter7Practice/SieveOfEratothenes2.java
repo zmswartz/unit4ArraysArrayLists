@@ -6,7 +6,7 @@ import java.util.Scanner;
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class SieveOfEratothenes
+public class SieveOfEratothenes2
 {
 
     /**
@@ -24,23 +24,24 @@ public class SieveOfEratothenes
     {
         Scanner scan = new Scanner(System.in);
         System.out.print("Find all primes under: ");
-        int num = scan.nextInt();
-        boolean[] primes = new boolean[num/2-1];
+        int num = scan.nextInt() + 1 ;
+        boolean[] primes = new boolean[num];
         
-        for (int i = 0; i < num/2-1; i++)
+        for (int i = 2; i < num; i++)
         {
             primes[i] = true;
         }
         int divisor = 0;
-        
-        for (int i = 0; i < num/2-1; i++)
+        primes[0] = false;
+        primes[1] = false;
+        for (int i = 2; i < num; i++)
         {
             if(primes[i] == true)
             {
-                divisor = i*2 + 3;
-                for (int a = i + 1; a < num/2-1; a = a+1)
+                divisor = i ;
+                for (int a = divisor + 2; a < num; a = a+2)
                 {
-                    if ( (a*2 +3) % divisor == 0)
+                    if ( a  % divisor == 0)
                     {
                         primes[a] = false;
                     }
@@ -49,16 +50,16 @@ public class SieveOfEratothenes
         }
         
         
-        String s = "[2, ";
-        for (int i = 0 ; i < num/2-1; i++)
+        String s = "[";
+        for (int i = 0 ; i < num; i++)
         {
             if (primes[i] != false)
             {
-                if( i != 0)
+                if( i != 2)
                 {
                     s += ", ";
                 }
-                s+= i*2 +3;
+                s+= i ;
             }
             
         }
