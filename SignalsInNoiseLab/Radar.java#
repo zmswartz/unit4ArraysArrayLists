@@ -14,8 +14,6 @@ public class Radar
     // value of each cell is incremented for each scan in which that cell triggers detection 
     private int[][] accumulator;
     private boolean[][] possibleStartingLocations;
-    private boolean[][] nextScanLocations;
-    private int[][] differences;
     
     // location of the monster
     private int initialMonsterLocationRow;
