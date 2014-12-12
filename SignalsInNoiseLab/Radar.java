@@ -10,6 +10,7 @@ public class Radar
     
     // stores whether each cell triggered detection for the current scan of the radar
     private boolean[][] currentScan;
+    private boolean[][] lastScan;
     
     // value of each cell is incremented for each scan in which that cell triggers detection 
     private int[][] accumulator;
@@ -43,13 +44,14 @@ public class Radar
     {
         // initialize instance variables
         currentScan = new boolean[rows][cols]; // elements will be set to false
+        lastScan = new boolean[rows][cols];
         accumulator = new int[rows][cols]; // elements will be set to 0
         possibleStartingLocations = new boolean[rows][cols];
-        for(int row = 0; row < possibleStartingLocations.length; row++)
+        for(int row = 0; row < accumulator.length; row++)
         {
-            for(int col = 0; col < possibleStartingLocations[0].length; col++)
+            for(int col = 0; col < accumulator[0].length; col++)
             {
-               possibleStartingLocations[row][col] = false;
+               accumulator[row][col] = 0;
             }
         }
         // randomly set the location of the monster (can be explicity set through the
@@ -90,27 +92,77 @@ public class Radar
         //injectNoise();
         
         // udpate the accumulator
-        for(int row = 0; row < currentScan.length; row++)
+        if (numScans !=0)
         {
-            for(int col = 0; col < currentScan[0].length; col++)
+            for(int row = 0; row < currentScan.length; row++)
             {
-                if (numScans == 0 && currentScan[row][col] == true)
+                for(int col = 0; col < currentScan[0].length; col++)
                 {
-                    possibleStartingLocations[row][col] = true;
-                }
-                if(currentScan[row][col] == true)
-                {
-                   accumulator[row][col]++;
+                    if (currentScan[row][col] == true)
+                    {
+                        for (int row2 = 0; row2 < lastScan.length; row2++)
+                        {
+                            
+                            for (int col2 = 0; col2 < lastScan[0].length; col2++)
+                            {
+                                if (lastScan[row2][col2] == true)
+                                {
+                                    int diffx = col2 - col;
+                                    int diffy = row2 - row;
+                                    
+                                    if( diffx > -6 && diffy> -6 && diffx< 6 && diffy<6)
+                                    {
+                                        System.out.println(2);
+                                        accumulator[diffx+5][diffy+5] = accumulator[diffx+5][diffy+5]+1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
                 }
             }
         }
-        
+        duplicate();
         // keep track of the total number of scans
         monsterLocationRow = monsterLocationRow + yvelocity;
         monsterLocationCol = monsterLocationCol + xvelocity;
         numScans++;
     }
-
+    
+    private void duplicate()
+    {
+        for(int row = 0; row < currentScan.length; row++)
+        {
+            for(int col = 0; col < currentScan[0].length; col++)
+            {
+                if (currentScan[row][col] == true)
+                {
+                    lastScan[row][col] = true;
+                }
+                else
+                {
+                    lastScan[row][col] = false;
+                }
+            }
+        }
+    }
+    
+    public String findMax()
+    {
+        int max = 0;
+        String position
+        for (int row = 0; row< accumulator.length; row++)
+        {
+            for (int col = 0; col< accumulator.length; col++)
+            {
+                if(accumulator[row][col] > max)
+                {
+                }
+            }
+        }
+    }
+    
     /**
      * Sets the location of the monster
      * 
@@ -162,7 +214,8 @@ public class Radar
      */
     public int getAccumulatedDetection(int row, int col)
     {
-        return accumulator[row][col];
+        return 1;//accumulator[row][col];
+        
     }
     
     /**
