@@ -50,5 +50,8 @@ public class RadarViewer
         }
         System.out.println(radar.findMax());
     }
+    public RadarViewer()
+    {
+    }
 
 }
