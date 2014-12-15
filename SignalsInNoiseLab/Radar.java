@@ -19,10 +19,8 @@ public class Radar
     private int[][] differences;
     
     // location of the monster
-    private int initialMonsterLocationRow;
-    private int initialMonsterLocationCol;
-    private int monsterLocationRow;
-    private int monsterLocationCol;
+    public int monsterLocationRow;
+    public int monsterLocationCol;
     
     // movement of the monster
     private int xvelocity;
@@ -46,7 +44,7 @@ public class Radar
         currentScan = new boolean[rows][cols]; // elements will be set to false
         lastScan = new boolean[rows][cols];
         accumulator = new int[rows][cols]; // elements will be set to 0
-        possibleStartingLocations = new boolean[rows][cols];
+        
         for(int row = 0; row < accumulator.length; row++)
         {
             for(int col = 0; col < accumulator[0].length; col++)
@@ -59,12 +57,11 @@ public class Radar
         //monsterLocationRow = (int)(Math.random() * rows);
         //monsterLocationCol = (int)(Math.random() * cols);
         monsterLocationRow = 0;
-        monsterLocationRow = 0;
-        initialMonsterLocationRow = 0;
-        initialMonsterLocationCol = 0;
-        xvelocity = 2;
+        monsterLocationCol = 0;
+        
+        xvelocity = 4;
         yvelocity = 1;
-        noiseFraction = 0.05;
+        noiseFraction = 0.01;
         numScans= 0;
     }
     
@@ -89,7 +86,7 @@ public class Radar
         currentScan[monsterLocationRow][monsterLocationCol] = true;
         
         // inject noise into the grid
-        //injectNoise();
+        injectNoise();
         
         // udpate the accumulator
         if (numScans !=0)
@@ -107,12 +104,12 @@ public class Radar
                             {
                                 if (lastScan[row2][col2] == true)
                                 {
-                                    int diffx = col2 - col;
-                                    int diffy = row2 - row;
+                                    int diffx = col - col2;
+                                    int diffy = row - row2;
                                     
-                                    if( diffx > -6 && diffy> -6 && diffx< 6 && diffy<6)
+                                    if( diffx > -6 && diffy> -6 && diffx< 6 && diffy<6 && diffx !=0 && diffy !=0)
                                     {
-                                        System.out.println(2);
+                                        
                                         accumulator[diffx+5][diffy+5] = accumulator[diffx+5][diffy+5]+1;
                                     }
                                 }
@@ -125,8 +122,7 @@ public class Radar
         }
         duplicate();
         // keep track of the total number of scans
-        monsterLocationRow = monsterLocationRow + yvelocity;
-        monsterLocationCol = monsterLocationCol + xvelocity;
+        
         numScans++;
     }
     
@@ -151,16 +147,19 @@ public class Radar
     public String findMax()
     {
         int max = 0;
-        String position
+        String position = "";
         for (int row = 0; row< accumulator.length; row++)
         {
             for (int col = 0; col< accumulator.length; col++)
             {
                 if(accumulator[row][col] > max)
                 {
+                    max = accumulator[row][col];
+                    position = "dx: " + (row-5) + "\tdy:" + (col-5);
                 }
             }
         }
+        return position;
     }
     
     /**
@@ -177,7 +176,7 @@ public class Radar
         monsterLocationCol = col;
         
         // update the radar grid to show that something was detected at the specified location
-        currentScan[row][col] = true;
+        //currentScan[row][col] = true;
     }
     
      /**
