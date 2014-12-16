@@ -3,14 +3,17 @@ import javax.swing.JFrame;
 /**
  * Class that contains the main method for the program and creates the frame containing the component.
  * 
- * @author @gcschmit
- * @version 19 July 2014
+ * @author @zmswartz
+ * @version 15 December 2014
  */
 public class RadarViewer
 {
     /**
      * main method for the program which creates and configures the frame for the program
-     *
+     * @pre     both dx and dy are positive integers
+     * @pre     both dx and dy are less than or equal to 5
+     * @param   dx  the velocity in the x direction
+     * @param   dy  the velocity in the y direction
      */
     public static void main(String[] args, int dx, int dy) throws InterruptedException
     {
@@ -37,21 +40,19 @@ public class RadarViewer
         //  component.
         frame.setVisible(true);
         
-        // perform 100 scans of the radar wiht a slight pause between each
+        // perform scans of the radar wiht a slight pause between each until the monster leaves the frame
         // after each scan, instruct the Java Run-Time to redraw the window
         while ( Math.abs(radar.monsterLocationRow) < 100 && Math.abs(radar.monsterLocationCol) < 100)
         {
             Thread.sleep(100); // sleep 100 milliseconds (1/10 second)
             
-            radar.scan();
+            radar.scan();  //perform the scan
             
-            frame.repaint();
-            radar.setMonsterLocation(radar.monsterLocationRow + dx, radar.monsterLocationCol + dy);
+            frame.repaint();  //repaints frame
+            radar.setMonsterLocation(radar.monsterLocationRow + dy, radar.monsterLocationCol + dx);  //moves the monster based on the entered velocity
         }
         System.out.println(radar.findMax());
     }
-    public RadarViewer()
-    {
-    }
+    
 
 }

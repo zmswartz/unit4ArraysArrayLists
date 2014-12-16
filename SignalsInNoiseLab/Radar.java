@@ -2,8 +2,8 @@
 /**
  * The model for radar scan and accumulator
  * 
- * @author @gcschmit
- * @version 19 July 2014
+ * @author @zmswartz
+ * @version 15 December 2014
  */
 public class Radar
 {
@@ -12,20 +12,16 @@ public class Radar
     private boolean[][] currentScan;
     private boolean[][] lastScan;
     
-    // value of each cell is incremented for each scan in which that cell triggers detection 
+    // value of each velocity is incremented for each scan in which any cell has possibly traveled
     private int[][] accumulator;
-    private boolean[][] possibleStartingLocations;
+    
     private boolean[][] nextScanLocations;
-    private int[][] differences;
+    
     
     // location of the monster
     public int monsterLocationRow;
     public int monsterLocationCol;
     
-    // movement of the monster
-    private int xvelocity;
-    private int yvelocity;
-
     // probability that a cell will trigger a false detection (must be >= 0 and < 1)
     private double noiseFraction;
     
@@ -52,15 +48,10 @@ public class Radar
                accumulator[row][col] = 0;
             }
         }
-        // randomly set the location of the monster (can be explicity set through the
-        //  setMonsterLocation method
-        //monsterLocationRow = (int)(Math.random() * rows);
-        //monsterLocationCol = (int)(Math.random() * cols);
+        // iniial starting location of monster is top left hand corner
         monsterLocationRow = 0;
         monsterLocationCol = 0;
         
-        xvelocity = 4;
-        yvelocity = 1;
         noiseFraction = 0.01;
         numScans= 0;
     }
@@ -88,7 +79,7 @@ public class Radar
         // inject noise into the grid
         injectNoise();
         
-        // udpate the accumulator
+        // udpate the accumulator based on the velocities
         if (numScans !=0)
         {
             for(int row = 0; row < currentScan.length; row++)
@@ -104,12 +95,12 @@ public class Radar
                             {
                                 if (lastScan[row2][col2] == true)
                                 {
-                                    int diffx = col - col2;
+                                    int diffx = col - col2;  
                                     int diffy = row - row2;
                                     
                                     if( diffx > -6 && diffy> -6 && diffx< 6 && diffy<6 && diffx !=0 && diffy !=0)
                                     {
-                                        
+                                        // for accumulator: index 0 is a velocity of -5, index 1 is -4, ect.
                                         accumulator[diffx+5][diffy+5] = accumulator[diffx+5][diffy+5]+1;
                                     }
                                 }
@@ -120,12 +111,17 @@ public class Radar
                 }
             }
         }
+        //duplicates the currentScan to lastScan for future use
         duplicate();
         // keep track of the total number of scans
         
         numScans++;
     }
     
+    /**
+     * Copies currentScan to LastScan.
+     * 
+     */
     private void duplicate()
     {
         for(int row = 0; row < currentScan.length; row++)
@@ -144,6 +140,10 @@ public class Radar
         }
     }
     
+    /**
+     * Finds the x and y velocity pair which appears most frequenly
+     * @return  String with the x and y velocities
+     */
     public String findMax()
     {
         int max = 0;
@@ -155,7 +155,7 @@ public class Radar
                 if(accumulator[row][col] > max)
                 {
                     max = accumulator[row][col];
-                    position = "dx: " + (row-5) + "\tdy:" + (col-5);
+                    position = "dx: " + (row-5) + "   dy:" + (col-5);
                 }
             }
         }
